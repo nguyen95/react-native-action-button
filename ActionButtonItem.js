@@ -8,6 +8,7 @@ import {
   TouchableNativeFeedback,
   TouchableWithoutFeedback,
   Dimensions,
+  Platform,
 } from "react-native";
 import {
   shadowStyle,
@@ -66,6 +67,7 @@ export default class ActionButtonItem extends Component {
       alignItems: alignItemsMap[position],
 
       // backgroundColor: this.props.buttonColor,
+      opacity: Platform.OS === "android" ? 1 : this.props.anim,
       transform: [
         {
           translateY: this.props.anim.interpolate({
