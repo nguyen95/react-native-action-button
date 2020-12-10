@@ -66,7 +66,6 @@ export default class ActionButtonItem extends Component {
       alignItems: alignItemsMap[position],
 
       // backgroundColor: this.props.buttonColor,
-      opacity: this.props.anim,
       transform: [
         {
           translateY: this.props.anim.interpolate({
