@@ -35,13 +35,13 @@ const ActionButton = props => {
 
   useEffect(() => {
     if (props.active) {
-      Animated.spring(anim.current, { toValue: 1, useNativeDriver: false }).start();
+      Animated.timing(anim.current, { toValue: 1, useNativeDriver: false, duration: 300, }).start();
       setActive(true);
       setResetToken(props.resetToken);
     } else {
       props.onReset && props.onReset();
 
-      Animated.spring(anim.current, { toValue: 0, useNativeDriver: false }).start();
+      Animated.timing(anim.current, { toValue: 0, useNativeDriver: false, duration: 300, }).start();
       timeout.current = setTimeout(() => {
         setActive(false);
         setResetToken(props.resetToken);
@@ -254,7 +254,7 @@ const ActionButton = props => {
     if (active) return reset(animate);
 
     if (animate) {
-      Animated.spring(anim.current, { toValue: 1, useNativeDriver: false }).start();
+      Animated.timing(anim.current, { toValue: 1, useNativeDriver: false, duration: 300, }).start();
     } else {
       anim.current.setValue(1);
     }
@@ -266,7 +266,7 @@ const ActionButton = props => {
     if (props.onReset) props.onReset();
 
     if (animate) {
-      Animated.spring(anim.current, { toValue: 0, useNativeDriver: false }).start();
+      Animated.timing(anim.current, { toValue: 0, useNativeDriver: false, duration: 300, }).start();
     } else {
       anim.current.setValue(0);
     }

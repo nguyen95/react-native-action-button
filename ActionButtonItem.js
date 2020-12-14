@@ -57,7 +57,8 @@ export default class ActionButtonItem extends Component {
       position,
       verticalOrientation,
       hideShadow,
-      spacing
+      spacing,
+      spaceBetween,
     } = this.props;
 
     if (!this.props.active) return null;
@@ -72,7 +73,7 @@ export default class ActionButtonItem extends Component {
         {
           translateY: this.props.anim.interpolate({
             inputRange: [0, 1],
-            outputRange: [verticalOrientation === "down" ? -40 : 40, 0]
+            outputRange: [verticalOrientation === "down" ? -size - spaceBetween : size + spaceBetween, 0]
           })
         }
       ]
