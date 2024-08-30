@@ -21,6 +21,8 @@ const ActionButton = props => {
   const [, setResetToken] = useState(props.resetToken);
   const [active, setActive] = useState(props.active);
   const anim = useRef(new Animated.Value(props.active ? 1 : 0));
+  const animBackgroundColor = useRef(new Animated.Value(props.active ? 1 : 0));
+  const animImageOpacity = useRef(new Animated.Value(1));
   const timeout = useRef(null);
   const mounted = useRef(false);
 
@@ -35,13 +37,14 @@ const ActionButton = props => {
 
   useEffect(() => {
     if (props.active) {
-      Animated.timing(anim.current, { toValue: 1, useNativeDriver: false, duration: 300, }).start();
+      Animated.timing(anim.current, { toValue: 1, useNativeDriver: true, duration: 300, }).start();
+	  Animated.timing(animBackgroundColor.current, { toValue: 1, useNativeDriver: false, duration: 300, }).start();
       setActive(true);
       setResetToken(props.resetToken);
     } else {
       props.onReset && props.onReset();
-
-      Animated.timing(anim.current, { toValue: 0, useNativeDriver: false, duration: 300, }).start();
+      Animated.timing(anim.current, { toValue: 0, useNativeDriver: true, duration: 300, }).start();
+	  Animated.timing(animBackgroundColor.current, { toValue: 0, useNativeDriver: false, duration: 300, }).start();
       timeout.current = setTimeout(() => {
         setActive(false);
         setResetToken(props.resetToken);
@@ -95,13 +98,14 @@ const ActionButton = props => {
     };
 
     const wrapperStyle = {
-      backgroundColor: anim.current.interpolate({
+      backgroundColor: animBackgroundColor.current.interpolate({
         inputRange: [0, 1],
         outputRange: [props.buttonColor, props.btnOutRange || props.buttonColor]
       }),
       width: props.size,
       height: props.size,
-      borderRadius: props.size / 2
+      borderRadius: props.size / 2,
+	  overflow: 'hidden', // overflow: 'hidden' così l'immagine non esca fuori dai bordi
     };
 
     const buttonStyle = {
@@ -145,10 +149,37 @@ const ActionButton = props => {
             props.onPress();
             if (props.children) animateButton();
           }}
-          onPressIn={props.onPressIn}
-          onPressOut={props.onPressOut}
+          onPressIn={() => {
+            if (props.imageSource) {
+              console.log('onPressIn');
+              Animated.timing(animImageOpacity.current, {
+                toValue: 0.3,
+                duration: 250,
+                useNativeDriver: true
+              }).start();
+            }
+            if (props.onPressIn) props.onPressIn();
+          }}
+          onPressOut={() => {
+            if (props.imageSource) {
+              console.log('onPressOut');
+              Animated.timing(animImageOpacity.current, {
+                toValue: 1, // Reset opacity
+                duration: 250,
+                useNativeDriver: true
+              }).start();
+            }
+            if (props.onPressOut) props.onPressOut();
+          }}
         >
           <Animated.View style={wrapperStyle}>
+			{props.imageSource && (
+              <Animated.Image
+                source={props.imageSource}
+                style={[styles.backgroundImage, { opacity: animImageOpacity.current }]}
+                resizeMode="cover"
+              />
+            )}
             <Animated.View style={[buttonStyle, animatedViewStyle]}>
               {_renderButtonIcon()}
             </Animated.View>
@@ -182,7 +213,7 @@ const ActionButton = props => {
           styles.btnText,
           buttonTextStyle,
           {
-            color: anim.current.interpolate({
+            color: animBackgroundColor.current.interpolate({
               inputRange: [0, 1],
               outputRange: [textColor, btnOutRangeTxt || textColor]
             })
@@ -254,9 +285,11 @@ const ActionButton = props => {
     if (active) return reset(animate);
 
     if (animate) {
-      Animated.timing(anim.current, { toValue: 1, useNativeDriver: false, duration: 300, }).start();
+      Animated.timing(anim.current, { toValue: 1, useNativeDriver: true, duration: 300, }).start();
+	  Animated.timing(animBackgroundColor.current, { toValue: 1, useNativeDriver: false, duration: 300, }).start();
     } else {
       anim.current.setValue(1);
+	  animBackgroundColor.current.setValue(1);
     }
 
     setActive(true);
@@ -266,9 +299,11 @@ const ActionButton = props => {
     if (props.onReset) props.onReset();
 
     if (animate) {
-      Animated.timing(anim.current, { toValue: 0, useNativeDriver: false, duration: 300, }).start();
+      Animated.timing(anim.current, { toValue: 0, useNativeDriver: true, duration: 300, }).start();
+	  Animated.timing(animBackgroundColor.current, { toValue: 0, useNativeDriver: false, duration: 300, }).start();
     } else {
       anim.current.setValue(0);
+	  animBackgroundColor.current.setValue(0);
     }
 
     timeout.current = setTimeout(() => {
@@ -337,6 +372,7 @@ ActionButton.propTypes = {
   buttonColor: PropTypes.string,
   buttonTextStyle: Text.propTypes.style,
   buttonText: PropTypes.string,
+  imageSource: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
 
   offsetX: PropTypes.number,
   offsetY: PropTypes.number,
@@ -389,7 +425,8 @@ ActionButton.defaultProps = {
   nativeFeedbackRippleColor: "rgba(255,255,255,0.75)",
   testID: undefined,
   accessibilityLabel: undefined,
-  accessible: undefined
+  accessible: undefined,
+  imageSource: null, // Default null per imageSource
 };
 
 const styles = StyleSheet.create({
