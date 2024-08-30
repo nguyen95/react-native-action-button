@@ -28,7 +28,7 @@ export interface ActionButtonProperties extends ViewProperties {
   spacing?: number,
   size?: number,
   autoInactive?: boolean,
-  onPress?: () => void,
+  onPress?: (active: boolean) => void,
   renderIcon?: (active: boolean) => React.ReactElement<any>,
   backdrop?: boolean | object,
   degrees?: number,

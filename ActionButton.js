@@ -1,4 +1,4 @@
-import React, { Component, useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   StyleSheet,
@@ -38,13 +38,13 @@ const ActionButton = props => {
   useEffect(() => {
     if (props.active) {
       Animated.timing(anim.current, { toValue: 1, useNativeDriver: true, duration: 300, }).start();
-	  Animated.timing(animBackgroundColor.current, { toValue: 1, useNativeDriver: false, duration: 300, }).start();
+	    Animated.timing(animBackgroundColor.current, { toValue: 1, useNativeDriver: false, duration: 300, }).start();
       setActive(true);
       setResetToken(props.resetToken);
     } else {
       props.onReset && props.onReset();
       Animated.timing(anim.current, { toValue: 0, useNativeDriver: true, duration: 300, }).start();
-	  Animated.timing(animBackgroundColor.current, { toValue: 0, useNativeDriver: false, duration: 300, }).start();
+	    Animated.timing(animBackgroundColor.current, { toValue: 0, useNativeDriver: false, duration: 300, }).start();
       timeout.current = setTimeout(() => {
         setActive(false);
         setResetToken(props.resetToken);
@@ -146,7 +146,7 @@ const ActionButton = props => {
           activeOpacity={props.activeOpacity}
           onLongPress={props.onLongPress}
           onPress={() => {
-            props.onPress();
+            props.onPress(active);
             if (props.children) animateButton();
           }}
           onPressIn={() => {
@@ -171,7 +171,7 @@ const ActionButton = props => {
           }}
         >
           <Animated.View style={wrapperStyle}>
-			{props.imageSource && (
+			      {props.imageSource && (
               <Animated.Image
                 source={props.imageSource}
                 style={[styles.backgroundImage, { opacity: animImageOpacity.current }]}
