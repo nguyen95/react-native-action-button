@@ -151,7 +151,6 @@ const ActionButton = props => {
           }}
           onPressIn={() => {
             if (props.imageSource) {
-              console.log('onPressIn');
               Animated.timing(animImageOpacity.current, {
                 toValue: 0.3,
                 duration: 250,
@@ -162,7 +161,6 @@ const ActionButton = props => {
           }}
           onPressOut={() => {
             if (props.imageSource) {
-              console.log('onPressOut');
               Animated.timing(animImageOpacity.current, {
                 toValue: 1, // Reset opacity
                 duration: 250,
