@@ -2,7 +2,8 @@ import * as React from 'react'
 import {
   ViewStyle,
   ViewProperties,
-  TextStyle
+  TextStyle,
+  ImageSourcePropType
 } from 'react-native'
 
 
